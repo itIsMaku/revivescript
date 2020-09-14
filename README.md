@@ -5,5 +5,5 @@ Lua script for FiveM | Revive your self at EMS station
 - es_extended
 - esx_ambulancejob
 
-## Developera:
+## Developers:
 - itIsMaku & Svejdarpa
