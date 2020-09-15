@@ -1,6 +1,12 @@
-Config              = {}
-Config.MaxDistance  = 2.5
-Config.price        = 200
+Config              	= {}
+Config.MaxDistance  	= 4.5
+
+Config.Price        	= 200
+Config.GiveSocietyMoney = true
+
+-- Set this only if you have GiveSocietyMoney = true!
+Config.Society 			= 'society_ambulance'
+
 Config.revList = {
 
 	{
