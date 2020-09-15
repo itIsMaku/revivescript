@@ -32,7 +32,8 @@ Citizen.CreateThread(function()
 
             if distance < Config.MaxDistance and InAction == false then
 				
-                ESX.Game.Utils.DrawText3D({ x = revID.coords.x, y = revID.coords.y, z = revID.coords.z + 1 }, revID.text, 0.6)
+                ESX.Game.Utils.DrawText3D({ x = revID.coords.x, y = revID.coords.y, z = revID.coords.z + 1 }, revID.text, 1.2, 2)
+				--DrawText3D({ x = revID.coords.x, y = revID.coords.y, z = revID.coords.z}, 'Test: ' .. revID.text)
 
                 if IsControlJustReleased(0, Keys['E']) then
                     revActive(revID.coords.x, revID.coords.y, revID.coords.z, revID.heading, revID)
@@ -51,39 +52,44 @@ function RespawnPed(ped, coords, heading)
 end
 
 function revActive(x, y, z, heading, source)
- SetEntityCoords(GetPlayerPed(-1), x, y, z + 0.3)
-    InAction = true
+	ESX.TriggerServerCallback('revivescript:checkMoney', function(hasEnoughMoney)
+	if hasEnoughMoney then
+		InAction = true
+		Citizen.CreateThread(function ()
+			Citizen.Wait(5)
+			local health = GetEntityHealth(PlayerPedId())
+			if (health < 300)  then		
+			if InAction == true then
+				local formattedCoords = {
+					x = 321.97,  
+					y = -590.64,
+					z = 43.28
+				}
 
-	Citizen.CreateThread(function ()
-	    Citizen.Wait(5)
-	    local health = GetEntityHealth(PlayerPedId())
-	    if (health < 300)  then		
-		if InAction == true then
-		   local formattedCoords = {
-				x = 321.97,  
-				y = -590.64,
-				z = 43.28
-			}
-
-			local playerID = ESX.Game.GetPlayerServerId
+				local playerID = ESX.Game.GetPlayerServerId
 			
-			ESX.SetPlayerData('lastPosition', formattedCoords)
-			ESX.SetPlayerData('loadout', {})
-			TriggerServerEvent('esx_ambulancejob:revive', playerID);
-			RespawnPed(PlayerPedId(), formattedCoords, 157.03)
-			TriggerServerEvent('esx:updateLastPosition', formattedCoords)
-			StopScreenEffect('DeathFailOut')
-			DoScreenFadeIn(800)
-			ESX.ShowNotification('You have been revived.')
-			ClearPedTasks(GetPlayerPed(-1))
-			FreezeEntityPosition(GetPlayerPed(-1), false)
-			SetEntityCoords(GetPlayerPed(-1), x + 1.0, y, z)			
-			InAction = false
-		end
+				ESX.SetPlayerData('lastPosition', formattedCoords)
+				ESX.SetPlayerData('loadout', {})
+				TriggerServerEvent('esx_ambulancejob:revive', playerID)
+				TriggerServerEvent('revivescript:pay')
+				RespawnPed(PlayerPedId(), formattedCoords, 157.03)
+				TriggerServerEvent('esx:updateLastPosition', formattedCoords)
+				StopScreenEffect('DeathFailOut')
+				DoScreenFadeIn(800)
+				ESX.ShowNotification('You have been revived.')
+				ClearPedTasks(GetPlayerPed(-1))
+				FreezeEntityPosition(GetPlayerPed(-1), false)
+				SetEntityCoords(GetPlayerPed(-1), x + 1.0, y, z)			
+				InAction = false
+			end
 
-	    elseif (health == 200) then
-		ESX.ShowNotification('You do not need medical attention')
-	    end
+			elseif (health == 200) then
+				ESX.ShowNotification('You do not need medical attention')
+			end
+		end)
+	else
+		ESX.ShowNotification('You do not have $' .. Config.Price .. ' to pay doctors.')
+	end
 	end)
 end
 
@@ -93,10 +99,3 @@ Citizen.CreateThread(function()
         SetPlayerHealthRechargeMultiplier(PlayerId(), 0.0)
     end
 end)
-
-function DrawSub(msg, time)
-    ClearPrints()
-    SetTextEntry_2("STRING")
-    AddTextComponentString(msg)
-    DrawSubtitleTimed(time, 1)
-end
