@@ -2,6 +2,8 @@ Config              	= {}
 Config.MaxDistance  	= 4.5
 
 Config.Price        	= 200
+Config.AlwaysAllow	= false -- FALSE TO ALWAYS ALLOW, TRUE TO NOT ALWAYS ALLOW
+Config.SerivceCount	= 2 -- IF ABOVE IS TRUE, WHEN THIS AMOUNT OF EMS IS CONNECTED, USERS CAN'T CHECK IN ANYMORE
 Config.GiveSocietyMoney = true
 
 -- Set this only if you have GiveSocietyMoney = true!
