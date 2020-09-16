@@ -31,13 +31,25 @@ Citizen.CreateThread(function()
             local distance = GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId()), revID.coords.x, revID.coords.y, revID.coords.z, true)
 
             if distance < Config.MaxDistance and InAction == false then
-				
-                ESX.Game.Utils.DrawText3D({ x = revID.coords.x, y = revID.coords.y, z = revID.coords.z + 1 }, revID.text, 1.2, 2)
+		if not Config.AlwaysAllow then
+		    ESX.TriggerServerCallback('revivescript:getConnectedEMS', function(amount)
+			if amount < Config.ServiceCount then
+			    ESX.Game.Utils.DrawText3D({ x = revID.coords.x, y = revID.coords.y, z = revID.coords.z + 1 }, revID.text, 1.2, 2)
 				--DrawText3D({ x = revID.coords.x, y = revID.coords.y, z = revID.coords.z}, 'Test: ' .. revID.text)
 
-                if IsControlJustReleased(0, Keys['E']) then
-                    revActive(revID.coords.x, revID.coords.y, revID.coords.z, revID.heading, revID)
-                end
+                	    if IsControlJustReleased(0, Keys['E']) then
+                    		revActive(revID.coords.x, revID.coords.y, revID.coords.z, revID.heading, revID)
+                    	    end						
+			end
+		    end)			
+		else
+		    ESX.Game.Utils.DrawText3D({ x = revID.coords.x, y = revID.coords.y, z = revID.coords.z + 1 }, revID.text, 1.2, 2)
+				--DrawText3D({ x = revID.coords.x, y = revID.coords.y, z = revID.coords.z}, 'Test: ' .. revID.text)
+
+                    if IsControlJustReleased(0, Keys['E']) then
+                    	revActive(revID.coords.x, revID.coords.y, revID.coords.z, revID.heading, revID)
+                    end				
+		end
             end
         end
     end
