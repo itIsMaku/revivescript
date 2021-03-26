@@ -3,7 +3,7 @@ ESX = nil
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 ESX.RegisterServerCallback('revivescript:getConnectedEMS', function(source, cb)
-	local players = ESX.GetPlayers()
+	local xPlayers = ESX.GetPlayers()
 	local amount = 0
 
 	for i=1, #xPlayers, 1 do
